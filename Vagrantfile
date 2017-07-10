@@ -38,9 +38,12 @@ Vagrant.configure("2") do |config|
     ## Base: packages, development tools
 
     # Add ppa repository for git and neovim
+    # TODO: add-apt-repository with proper keys?
     echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" \
       >> /etc/apt/sources.list
     echo "deb http://ppa.launchpad.net/neovim-ppa/stable/ubuntu xenial main" \
+      >> /etc/apt/sources.list
+    echo "deb http://ppa.launchpad.net/jonathonf/python-3.6/ubuntu xenial main" \
       >> /etc/apt/sources.list
     apt-get -y update
 
@@ -49,12 +52,30 @@ Vagrant.configure("2") do |config|
       virtualbox-guest-x11 xfonts-base slim
     # Install packages from standard repo
     apt-get install -y mc silversearcher-ag bash zsh tmux rubygems \
-      build-essential make python2.7 rxvt-unicode chromium-browser
-    # INstall packages from ppa's
-    apt-get install -y --allow-unauthenticated git neovim
+      build-essential make python2.7 rxvt-unicode-256color chromium-browser
+    # Install packages from ppa's
+    apt-get install -y --allow-unauthenticated git neovim python3.6
 
     # Homesick
     gem install homesick
+    su - vagrant -c "homesick clone https://github.com/HoborgHUN/zshrc.git"
+    su - vagrant -c "homesick symlink zshrc"
+
+    su - vagrant -c "homesick clone https://github.com/HoborgHUN/dotvim.git"
+    su - vagrant -c "homesick symlink dotvim"
+
+    su - vagrant -c "homesick clone https://github.com/HoborgHUN/dev-dotfiles.git"
+    su - vagrant -c "homesick symlink dev-dotfiles"
+
+    # Powerline fonts
+    wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+    mkdir -p /home/vagrant/.local/share/fonts
+    mv PowerlineSymbols.otf /home/vagrant/.local/share/fonts/
+    fc-cache -vf /home/vagrant/.local/share/fonts/
+    mkdir -p /home/vagrant/.config/fontconfig/conf.d
+    mv 10-powerline-symbols.conf /home/vagrant/.config/fontconfig/conf.d/
+
     # TODO: create a minimal config setup (copy from work)
     # TODO: rmtrash and misc scripts (copy from work)
     # TODO: vimwiki assets
@@ -65,6 +86,13 @@ Vagrant.configure("2") do |config|
     VBoxClient --display
     VBoxClient --checkhostversion
     VBoxClient --seamless
+
+    # Switch shell
+    chsh -s /usr/bin/zsh  # for root
+    chsh -s /usr/bin/zsh vagrant
+
+    # Neovim plugins
+    nvim -c "PlugInstall"
 
     systemctl set-default graphical.target
     systemctl enable slim.service
