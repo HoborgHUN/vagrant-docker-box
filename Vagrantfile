@@ -68,6 +68,7 @@ Vagrant.configure("2") do |config|
     su - vagrant -c "homesick symlink dev-dotfiles"
 
     # Powerline fonts
+    # FIXME they still don't work
     wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
     wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
     mkdir -p /home/vagrant/.local/share/fonts
@@ -76,7 +77,6 @@ Vagrant.configure("2") do |config|
     mkdir -p /home/vagrant/.config/fontconfig/conf.d
     mv 10-powerline-symbols.conf /home/vagrant/.config/fontconfig/conf.d/
 
-    # TODO: create a minimal config setup (copy from work)
     # TODO: rmtrash and misc scripts (copy from work)
     # TODO: vimwiki assets
 
