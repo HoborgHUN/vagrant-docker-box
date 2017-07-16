@@ -1,2 +1,4 @@
 .vagrant
 *.log
+.sudo_as_admin_successful
+.cache/
