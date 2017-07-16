@@ -106,6 +106,9 @@ Vagrant.configure("2") do |config|
     # Chown files in home
     chown -R vagrant /home/vagrant
 
+    # Allow user to use shared vm folders
+    adduser vagrant vboxsf
+
     # Enable slim login
     systemctl set-default graphical.target
     systemctl enable slim.service
