@@ -1,7 +1,10 @@
 # encoding: utf-8
 # -*- mode: ruby -*-
 # vim: set ft=ruby :
-# FIXME: why does this piece of shit make images on C:/Users??????
+
+# If I don't want to download images on C drive:
+# Need to set environment variable first
+# VAGRANT_HOME = D:\vagrant.d
 
 # Box / OS
 VAGRANT_BOX = 'bento/ubuntu-16.04'
@@ -107,7 +110,9 @@ Vagrant.configure("2") do |config|
     chown -R vagrant /home/vagrant
 
     # Allow user to use shared vm folders
-    adduser vagrant vboxsf
+    usermod -a -G vboxsf vagrant
+    # Allow user to use docker commands
+    usermod -a -G docker vagrant
 
     # Enable slim login
     systemctl set-default graphical.target
