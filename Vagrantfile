@@ -7,7 +7,7 @@
 VAGRANT_BOX = 'bento/ubuntu-16.04'
 
 # Name for the VM
-VM_NAME = 'PyDev'
+VM_NAME = 'docker-box'
 
 # VM User
 VM_USER = 'vagrant'
@@ -32,53 +32,63 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.network "private_network", type: "dhcp"
-  config.vm.synced_folder '.', '/home/'+VM_USER+'', disabled: true
+  # FIXME: sync folder not working (is it necessary?)
+  # config.vm.synced_folder HOST_PATH, GUEST_PATH
   config.vm.provision "file", source: ".bashrc", destination: "/home/vagrant/.bashrc"
+  config.vm.provision "file", source: ".Xresources", destination: "/home/vagrant/.Xresources"
+
   config.vm.provision "shell", inline: <<-SHELL
-    ## Base: packages, development tools
+    # ## Base: packages, development tools
 
-    # Add ppa repository for git and neovim
-    # TODO: add-apt-repository with proper keys?
-    echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" \
-      >> /etc/apt/sources.list
-    echo "deb http://ppa.launchpad.net/neovim-ppa/stable/ubuntu xenial main" \
-      >> /etc/apt/sources.list
-    echo "deb http://ppa.launchpad.net/jonathonf/python-3.6/ubuntu xenial main" \
-      >> /etc/apt/sources.list
+    # # Install packages from standard repo
+    # apt-get install -y mc silversearcher-ag bash zsh tmux rubygems \
+    #   build-essential make python2.7
+    # # Install packages from ppa's
+    # # TODO: add ppa repos
+    # apt-get install -y --allow-unauthenticated git neovim python3.6
+
+    # # Homesick
+    # gem install homesick
+    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/zshrc.git"
+    # su - vagrant -c "homesick symlink zshrc"
+
+    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/dotvim.git"
+    # su - vagrant -c "homesick symlink dotvim"
+
+    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/dev-dotfiles.git"
+    # su - vagrant -c "homesick symlink dev-dotfiles"
+
+    # # Powerline fonts
+    # # FIXME they still don't work
+    # # TODO: use git install script instead
+    # wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    # wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+    # mkdir -p /home/vagrant/.local/share/fonts
+    # mv PowerlineSymbols.otf /home/vagrant/.local/share/fonts/
+    # fc-cache -vf /home/vagrant/.local/share/fonts/
+    # mkdir -p /home/vagrant/.config/fontconfig/conf.d
+    # mv 10-powerline-symbols.conf /home/vagrant/.config/fontconfig/conf.d/
+
+    # # TODO: rmtrash and misc scripts (copy from work)
+    # # TODO: vimwiki assets
+
+    # # Switch shell
+    # chsh -s /usr/bin/zsh  # for root
+    # chsh -s /usr/bin/zsh vagrant
+
+    # # Neovim plugins
+    # nvim -c "PlugInstall"
+
+    # -----------TESTING------------------
+    # Install docker
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
     apt-get -y update
+    apt-get install -y docker-ce
 
-    # Install gui and virtualbox additions
+    # Install xfce, terminal, vbox additions
     apt-get install -y xfce4 virtualbox-guest-dkms virtualbox-guest-utils \
-      virtualbox-guest-x11 xfonts-base slim
-    # Install packages from standard repo
-    apt-get install -y mc silversearcher-ag bash zsh tmux rubygems \
-      build-essential make python2.7 rxvt-unicode-256color chromium-browser
-    # Install packages from ppa's
-    apt-get install -y --allow-unauthenticated git neovim python3.6
-
-    # Homesick
-    gem install homesick
-    su - vagrant -c "homesick clone https://github.com/HoborgHUN/zshrc.git"
-    su - vagrant -c "homesick symlink zshrc"
-
-    su - vagrant -c "homesick clone https://github.com/HoborgHUN/dotvim.git"
-    su - vagrant -c "homesick symlink dotvim"
-
-    su - vagrant -c "homesick clone https://github.com/HoborgHUN/dev-dotfiles.git"
-    su - vagrant -c "homesick symlink dev-dotfiles"
-
-    # Powerline fonts
-    # FIXME they still don't work
-    wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-    wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-    mkdir -p /home/vagrant/.local/share/fonts
-    mv PowerlineSymbols.otf /home/vagrant/.local/share/fonts/
-    fc-cache -vf /home/vagrant/.local/share/fonts/
-    mkdir -p /home/vagrant/.config/fontconfig/conf.d
-    mv 10-powerline-symbols.conf /home/vagrant/.config/fontconfig/conf.d/
-
-    # TODO: rmtrash and misc scripts (copy from work)
-    # TODO: vimwiki assets
+        virtualbox-guest-x11 xfonts-base slim rxvt-unicode-256color
 
     # Start virtualbox guest
     VBoxClient --clipboard
@@ -87,17 +97,18 @@ Vagrant.configure("2") do |config|
     VBoxClient --checkhostversion
     VBoxClient --seamless
 
-    # Switch shell
-    chsh -s /usr/bin/zsh  # for root
-    chsh -s /usr/bin/zsh vagrant
+    # Chown files in home
+    chown -R vagrant /home/vagrant
 
-    # Neovim plugins
-    nvim -c "PlugInstall"
-
+    # Enable slim login
     systemctl set-default graphical.target
     systemctl enable slim.service
+
+    # Install Powerline fonts
+    su - vagrant -c "git clone https://github.com/powerline/fonts.git ~/fonts"
+    su - vagrant -c "pushd ~/fonts && ./install.sh && popd && rm -rf fonts"
   SHELL
 
-  config.vm.define "PyDev" do |pydev|
+  config.vm.define "docker-box" do |nothing|
   end
 end
