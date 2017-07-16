@@ -106,7 +106,12 @@ Vagrant.configure("2") do |config|
 
     # Install Powerline fonts
     su - vagrant -c "git clone https://github.com/powerline/fonts.git ~/fonts"
-    su - vagrant -c "pushd ~/fonts && ./install.sh && popd && rm -rf fonts"
+    # Terminess powerline is not working by default, extra setup needed
+    su - vagrant -c "pushd ~/fonts && ./install.sh && \
+        mkdir -p ~/.config/fontconfig/conf.d && \
+        mv ~/fonts/fontconfig/*.conf ~/.config/fontconfig/conf.d/ && \
+        popd && rm -rf fonts"
+    fc-cache -vf /home/vagrant/.local/share/fonts
   SHELL
 
   config.vm.define "docker-box" do |nothing|
