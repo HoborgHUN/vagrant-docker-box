@@ -13,10 +13,10 @@ VM_NAME = 'docker-box'
 VM_USER = 'vagrant'
 
 # Host folder to sync
-HOST_PATH = 'D:\\Dokumentumok\\DockerDev\\' + VM_NAME
+HOST_PATH = 'D:/vagrant.d/share/' + VM_NAME
 
 # Where to sync to on Guest
-GUEST_PATH = '/home/' + VM_USER + '/' + VM_NAME
+GUEST_PATH = '/home/' + VM_USER + '/share'
 
 Vagrant.configure("2") do |config|
   config.vm.box = VAGRANT_BOX
