@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
     su - vagrant -c "pushd ~/fonts && ./install.sh && \
         mkdir -p ~/.config/fontconfig/conf.d && \
         mv ~/fonts/fontconfig/*.conf ~/.config/fontconfig/conf.d/ && \
-        popd && rm -rf fonts"
+        popd && rm -rf ~/fonts"
     fc-cache -vf /home/vagrant/.local/share/fonts
 
     # Reboot to apply changes
