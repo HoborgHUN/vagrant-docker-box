@@ -43,49 +43,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "slim.conf", destination: "slim.conf"
 
   config.vm.provision "shell", inline: <<-SHELL
-    # ## Base: packages, development tools
-
-    # # Install packages from standard repo
-    # apt-get install -y mc silversearcher-ag bash zsh tmux rubygems \
-    #   build-essential make python2.7
-    # # Install packages from ppa's
-    # # TODO: add ppa repos
-    # apt-get install -y --allow-unauthenticated git neovim python3.6
-
-    # # Homesick
-    # gem install homesick
-    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/zshrc.git"
-    # su - vagrant -c "homesick symlink zshrc"
-
-    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/dotvim.git"
-    # su - vagrant -c "homesick symlink dotvim"
-
-    # su - vagrant -c "homesick clone https://github.com/HoborgHUN/dev-dotfiles.git"
-    # su - vagrant -c "homesick symlink dev-dotfiles"
-
-    # # Powerline fonts
-    # # FIXME they still don't work
-    # # TODO: use git install script instead
-    # wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-    # wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-    # mkdir -p /home/vagrant/.local/share/fonts
-    # mv PowerlineSymbols.otf /home/vagrant/.local/share/fonts/
-    # fc-cache -vf /home/vagrant/.local/share/fonts/
-    # mkdir -p /home/vagrant/.config/fontconfig/conf.d
-    # mv 10-powerline-symbols.conf /home/vagrant/.config/fontconfig/conf.d/
-
-    # # TODO: rmtrash and misc scripts (copy from work)
-    # # TODO: vimwiki assets
-
-    # # Switch shell
-    # chsh -s /usr/bin/zsh  # for root
-    # chsh -s /usr/bin/zsh vagrant
-
-    # # Neovim plugins
-    # nvim -c "PlugInstall"
-
-    # -----------TESTING------------------
-    # fucking config home dir...
+    # Config home dir is not set by default
     export XDG_CONFIG_HOME=/home/vagrant/.config
 
     # Install docker
