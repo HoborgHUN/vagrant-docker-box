@@ -80,6 +80,9 @@ Vagrant.configure("2") do |config|
     # nvim -c "PlugInstall"
 
     # -----------TESTING------------------
+    # fucking config home dir...
+    export XDG_CONFIG_HOME=/home/vagrant/.config
+
     # Install docker
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
