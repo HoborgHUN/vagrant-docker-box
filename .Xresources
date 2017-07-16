@@ -4,8 +4,7 @@ URxvt.background: #121212
 URxvt.foreground: #bcbcbc
 URxvt.scrollstyle: plain
 URxvt.colorUL: #0088CC
-URxvt.font: xft:Terminess Powerline:size=10:hinting=True;antialias:True
-! URxvt.font: xft:GohuFont:style=bold:pixelsize=14
+URxvt.font: xft:Terminess Powerline:style=bold:size=14:hinting=True;antialias:True
 
 ! URxvt-Perls ------------------------------------------------------
 URxvt*altSendsEscape:       true
