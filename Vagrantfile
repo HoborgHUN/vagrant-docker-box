@@ -34,8 +34,10 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", type: "dhcp"
   # FIXME: sync folder not working (is it necessary?)
   # config.vm.synced_folder HOST_PATH, GUEST_PATH
+
   config.vm.provision "file", source: ".bashrc", destination: "/home/vagrant/.bashrc"
   config.vm.provision "file", source: ".Xresources", destination: "/home/vagrant/.Xresources"
+  config.vm.provision "file", source: "slim.conf", destination: "slim.conf"
 
   config.vm.provision "shell", inline: <<-SHELL
     # ## Base: packages, development tools
@@ -106,6 +108,8 @@ Vagrant.configure("2") do |config|
     # Enable slim login
     systemctl set-default graphical.target
     systemctl enable slim.service
+    # Move slim config to correct place
+    mv /home/vagrant/slim.conf /etc/slim.conf
 
     # Install Powerline fonts
     su - vagrant -c "git clone https://github.com/powerline/fonts.git ~/fonts"
@@ -115,6 +119,9 @@ Vagrant.configure("2") do |config|
         mv ~/fonts/fontconfig/*.conf ~/.config/fontconfig/conf.d/ && \
         popd && rm -rf fonts"
     fc-cache -vf /home/vagrant/.local/share/fonts
+
+    # Reboot to apply changes
+    sudo reboot now
   SHELL
 
   config.vm.define "docker-box" do |nothing|
